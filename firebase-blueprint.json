@@ -1,0 +1,130 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with gamified civic engagement metrics.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique Firebase user ID" },
+        "email": { "type": "string", "description": "User email address" },
+        "displayName": { "type": "string", "description": "Display name of the citizen" },
+        "photoURL": { "type": "string", "description": "Profile picture URL" },
+        "xp": { "type": "integer", "description": "Experience points earned" },
+        "citizenLevel": { "type": "integer", "description": "Level based on total XP" },
+        "badges": { "type": "array", "description": "IDs of unlocked badges" },
+        "contributionsCount": { "type": "integer", "description": "Number of issues reported or verified" },
+        "impactScore": { "type": "integer", "description": "Community impact rating" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "xp", "citizenLevel", "contributionsCount", "impactScore"]
+    },
+    "Issue": {
+      "title": "Issue",
+      "description": "A reported civic issue like potholes, streetlights, or waste problems.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique issue ID" },
+        "title": { "type": "string", "description": "Short title of the report" },
+        "description": { "type": "string", "description": "Detailed problem description" },
+        "imageUrl": { "type": "string", "description": "Image attachment URL" },
+        "category": { "type": "string", "description": "Type of issue, e.g., Roads/Potholes, Streetlights, Water/Sanitation" },
+        "severity": { "type": "string", "description": "Severity level: Low, Medium, High, Critical" },
+        "status": { "type": "string", "description": "Status of the problem: Reported, Verifying, Verified, In Progress, Resolved" },
+        "latitude": { "type": "number", "description": "Geographic latitude" },
+        "longitude": { "type": "number", "description": "Geographic longitude" },
+        "address": { "type": "string", "description": "Approximated address" },
+        "reporterId": { "type": "string", "description": "UID of the reporting citizen" },
+        "reporterName": { "type": "string", "description": "Display name of the reporter" },
+        "reportedAt": { "type": "string", "format": "date-time" },
+        "verificationsCount": { "type": "integer", "description": "Number of positive citizen verifications" },
+        "upvotes": { "type": "integer", "description": "Upvote count from community" },
+        "aiConfidence": { "type": "number", "description": "Gemini AI confidence score" },
+        "aiSummary": { "type": "string", "description": "AI analysis summary" }
+      },
+      "required": ["id", "title", "description", "category", "severity", "status", "latitude", "longitude", "reporterId", "reporterName", "reportedAt", "verificationsCount", "upvotes"]
+    },
+    "Verification": {
+      "title": "Verification",
+      "description": "Crowdsourced verification of a reported issue by another citizen.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique verification ID" },
+        "issueId": { "type": "string", "description": "Associated issue ID" },
+        "userId": { "type": "string", "description": "UID of the verifier" },
+        "userName": { "type": "string", "description": "Display name of the verifier" },
+        "verifiedAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "description": "The stance: Confirming, Resolved-Confirming" },
+        "comment": { "type": "string", "description": "Verification notes or photo description" }
+      },
+      "required": ["id", "issueId", "userId", "userName", "verifiedAt", "status"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "Discussion post on a civic issue report.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique comment ID" },
+        "issueId": { "type": "string", "description": "Associated issue ID" },
+        "userId": { "type": "string", "description": "UID of commenter" },
+        "userName": { "type": "string", "description": "Display name of commenter" },
+        "userPhotoUrl": { "type": "string", "description": "Commenter profile picture" },
+        "text": { "type": "string", "description": "Comment content" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "issueId", "userId", "userName", "text", "createdAt"]
+    },
+    "Badge": {
+      "title": "Badge",
+      "description": "Gamification badges awarded to citizens.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique badge ID" },
+        "title": { "type": "string", "description": "Display name of the badge" },
+        "description": { "type": "string", "description": "How to unlock the badge" },
+        "icon": { "type": "string", "description": "Icon type or name from lucide-react" }
+      },
+      "required": ["id", "title", "description", "icon"]
+    },
+    "CommunityMission": {
+      "title": "CommunityMission",
+      "description": "Collaborative city-wide missions for civic improvements.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique mission ID" },
+        "title": { "type": "string", "description": "Mission headline" },
+        "description": { "type": "string", "description": "Details of the goal" },
+        "xpReward": { "type": "integer", "description": "XP rewarded to participants" },
+        "targetCount": { "type": "integer", "description": "Target number of resolution/verifications" },
+        "currentCount": { "type": "integer", "description": "Current progress" },
+        "status": { "type": "string", "description": "Active, Completed" }
+      },
+      "required": ["id", "title", "description", "xpReward", "targetCount", "currentCount", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Stores user profiles, stats and levels."
+    },
+    "/issues/{issueId}": {
+      "schema": "Issue",
+      "description": "Stores reported civic issues with metadata and location."
+    },
+    "/issues/{issueId}/verifications/{verificationId}": {
+      "schema": "Verification",
+      "description": "Crowdsourced verification records for a specific issue."
+    },
+    "/issues/{issueId}/comments/{commentId}": {
+      "schema": "Comment",
+      "description": "Comments and discussion messages on an issue."
+    },
+    "/badges/{badgeId}": {
+      "schema": "Badge",
+      "description": "Global list of available gamification badges."
+    },
+    "/communityMissions/{missionId}": {
+      "schema": "CommunityMission",
+      "description": "Active civic goals for the community to accomplish."
+    }
+  }
+}

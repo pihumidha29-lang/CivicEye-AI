@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Rules for Users
+    match /users/{userId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Rules for Issues
+    match /issues/{issueId} {
+      allow read: if true; // Allow reading issues so landing page/dashboard works nicely
+      allow create, update, delete: if isSignedIn();
+
+      // Sub-collection rules inside issues
+      match /verifications/{verificationId} {
+        allow read: if true;
+        allow write: if isSignedIn();
+      }
+
+      match /comments/{commentId} {
+        allow read: if true;
+        allow write: if isSignedIn();
+      }
+    }
+
+    // Rules for Badges
+    match /badges/{badgeId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Rules for Community Missions
+    match /communityMissions/{missionId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "CivicEye AI",
+  "description": "An AI-powered civic issue reporting and community intelligence platform that helps citizens report, verify, track, and resolve local infrastructure problems.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
